@@ -1,0 +1,21 @@
+{
+  "testnet": {
+    "assets": [
+      "ALGO",
+      "tUSD"
+    ],
+    "contracts": {
+      "cALGO-tUSD": {
+        "appId": 0,
+        "assetId": 0,
+        "collateralAssetId": 0
+      },
+      "pALGO-tUSD": {
+        "appId": 0,
+        "assetId": 0,
+        "collateralAssetId": 0
+      }
+    }
+  },
+  "mainnet": ""
+}
