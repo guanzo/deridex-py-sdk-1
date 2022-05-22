@@ -2,15 +2,15 @@
   "testnet": {
     "assets": [
       "ALGO",
-      "tUSD"
+      "TNR"
     ],
     "contracts": {
-      "cALGO-tUSD": {
-        "appId": 0,
+      "cALGO-TNR-CASH": {
+        "appId": 90658109,
         "assetId": 0,
-        "collateralAssetId": 0
+        "collateralAssetId": 90658857
       },
-      "pALGO-tUSD": {
+      "pALGO-TNR-CASH": {
         "appId": 0,
         "assetId": 0,
         "collateralAssetId": 0

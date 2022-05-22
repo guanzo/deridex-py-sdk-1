@@ -1,7 +1,8 @@
 import os
 import json
-from algosdk.future.transaction import assign_group_id
+from algosdk.future.transaction import assign_group_id, ApplicationNoOpTxn
 from algosdk.error import AlgodHTTPError
+from algosdk.encoding import encode_address
 from base64 import b64decode, b64encode
 
 
@@ -39,12 +40,13 @@ def format_state(state):
             formatted_key = b64decode(key).decode('utf-8')
         except:
             formatted_key = b64decode(key)
+
         if value['type'] == 1:
             # byte string
             try:
                 formatted_value = b64decode(value['bytes']).decode('utf-8')
             except:
-                formatted_value=value['bytes']
+                formatted_value = encode_address(b64decode(value['bytes']))
             formatted[formatted_key] = formatted_value
         else:
             # integer
@@ -68,8 +70,34 @@ def read_global_state(indexer_client, app_id, block=None):
         application_info = indexer_client.applications(app_id, round_num=block).get("application", {})
     except:
         raise Exception("Application does not exist.")
-
     return format_state(application_info["params"]["global-state"])
+
+
+def read_local_state(indexer_client, address, app_id, block=None):
+    """Returns dict of local state for address for application with id app_id
+    :param indexer_client: indexer client
+    :type indexer_client: :class:`IndexerClient`
+    :param address: address of account for which to get state
+    :type address: string
+    :param app_id: id of the application
+    :type app_id: int
+    :param block: block at which to get the historical local state
+    :type block: int, optional
+    :return: dict of local state of address for application with id app_id
+    :rtype: dict
+    """
+
+    try:
+        results = indexer_client.account_info(address, round_num=block).get("account", {})
+    except:
+        raise Exception("Account does not exist.")
+
+    for local_state in results['apps-local-state']:
+        if local_state['id'] == app_id:
+            if 'key-value' not in local_state:
+                return {}
+            return format_state(local_state['key-value'])
+    return {}
 
 
 def wait_for_confirmation(client, txid):
@@ -105,10 +133,8 @@ class TransactionGroup:
         self.transactions = transactions
         self.signed_transactions = [None for _ in self.transactions]
 
-    def sign_with_private_key(self, address, private_key):
+    def sign_with_private_key(self, private_key):
         """Signs the transactions with specified private key and saves to class state
-        :param address: account address of the user
-        :type address: string
         :param private_key: private key of user
         :type private_key: string
         """
