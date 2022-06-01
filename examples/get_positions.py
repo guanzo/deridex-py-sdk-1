@@ -2,8 +2,6 @@ import os
 from dotenv import dotenv_values
 from algosdk import mnemonic
 from deridex.options.v1.client import TestnetClient, MainnetClient
-from deridex.options.v1.config import OptionType
-from deridex.utils import TransactionGroup
 
 
 my_path = os.path.abspath(os.path.dirname(__file__))
@@ -18,11 +16,5 @@ if IS_MAINNET:
 else:
     client = TestnetClient(address=sender)
 
-option = client.get_option(OptionType.CALL, underlying_asset="ALGO", collateral_asset="TNR")
-# Create transactions for options contract
-txs = option.burn(sender, 100_000_000)
-# Assemble group transaction
-gtx = TransactionGroup(txs)
-gtx.sign_with_private_key(key)
-gtx.submit(client.algod, wait=True)
+print(client.get_positions())
 

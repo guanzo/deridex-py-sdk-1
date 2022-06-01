@@ -8,12 +8,12 @@
       "cALGO-TNR-CASH": {
         "appId": 90658109,
         "assetId": 0,
-        "collateralAssetId": 90658857
+        "collateralAssetId": 89834463
       },
       "pALGO-TNR-CASH": {
-        "appId": 0,
+        "appId": 91658245,
         "assetId": 0,
-        "collateralAssetId": 0
+        "collateralAssetId": 89834463
       }
     }
   },

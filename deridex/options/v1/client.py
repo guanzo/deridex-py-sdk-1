@@ -1,8 +1,14 @@
+import os
+import json
 from algosdk.v2client.algod import AlgodClient
 from algosdk.v2client.indexer import IndexerClient
 
 from .config import OptionType
 from .option import Option
+
+# contracts abspath
+my_path = os.path.abspath(os.path.dirname(__file__))
+OPTIONS_CONTRACTS_FPATH = os.path.join(my_path, "contracts.json")
 
 
 class Client:
@@ -43,6 +49,39 @@ class Client:
         :rtype: class:`Option`
         """
         return Option(self.algod, self.indexer, self.network, option_type, underlying_asset, collateral_asset)
+
+    def get_positions(self):
+        # Pull contract info
+        with open(OPTIONS_CONTRACTS_FPATH, 'r') as contracts_file:
+            json_file = json.load(contracts_file)[self.network]['contracts']
+
+        # Iterate through known contracts and initialize option objects
+        options = []
+        for key, value in json_file.items():
+            option_type = OptionType.CALL if key[0] == 'c' else OptionType.PUT
+
+            if value['assetId'] == 0:
+                underlying_asset = 'ALGO'
+            else:
+                underlying_asset = self.indexer.asset_info(value['assetId'])['asset']['params']['unit-name']
+
+            if value['collateralAssetId'] == 0:
+                collateralAsset = 'ALGO'
+            else:
+                collateralAsset = self.indexer.asset_info(value['collateralAssetId'])['asset']['params']['unit-name']
+
+            option = self.get_option(option_type, underlying_asset, collateralAsset)
+            try:
+                option.update_local_state(self.address)
+            except KeyError:
+                pass
+
+            # Add option object to return param if local state
+            if len(option.local_state) != 0:  # If has local state
+                if option.local_state['created'] != 0:  # If in current position
+                    options.append(option)
+
+        return options
 
 
 class TestnetClient(Client):

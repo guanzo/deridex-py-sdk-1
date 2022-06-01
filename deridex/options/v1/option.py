@@ -4,7 +4,7 @@ from algosdk import encoding, logic
 
 from .config import OptionType
 from .contract_strings import OptionStrings, DataStrings
-from ...utils import read_global_state, read_local_state, get_option_app_id
+from ...utils import read_global_state, read_local_state, get_option_app_id, format_state
 
 
 class Option:
@@ -73,6 +73,19 @@ class Option:
 
     def update_local_state(self, address):
         self.local_state = read_local_state(self.indexer, address, self.appId)
+
+    def get_open_contracts(self):
+        results = {}
+        accounts = self.indexer.accounts(application_id=self.appId)["accounts"]
+        for account in accounts:
+            address = account["address"]
+            for app in account["apps-local-state"]:
+                if app["id"] == self.appId:
+                    state = format_state(app["key-value"])
+                    if state["created"] > 0:
+                        results[address] = state
+                    break
+        return results
 
     def get_default_params(self):
         """Initializes the transactions parameters for the client.

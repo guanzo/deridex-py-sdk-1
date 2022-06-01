@@ -14,9 +14,9 @@ key = mnemonic.to_private_key(user['mnemonic'])
 
 IS_MAINNET = False
 if IS_MAINNET:
-    client = MainnetClient()
+    client = MainnetClient(address=sender)
 else:
-    client = TestnetClient()
+    client = TestnetClient(address=sender)
 
 option = client.get_option(OptionType.CALL, underlying_asset="ALGO", collateral_asset="TNR")
 # Execute your own option
