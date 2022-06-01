@@ -1,0 +1,21 @@
+{
+  "testnet": {
+    "assets": [
+      "ALGO",
+      "TNR"
+    ],
+    "contracts": {
+      "cALGO-TNR-CASH": {
+        "appId": 90658109,
+        "assetId": 0,
+        "collateralAssetId": 89834463
+      },
+      "pALGO-TNR-CASH": {
+        "appId": 91658245,
+        "assetId": 0,
+        "collateralAssetId": 89834463
+      }
+    }
+  },
+  "mainnet": ""
+}
