@@ -56,6 +56,7 @@ class Perpetual:
         self.global_state["a1mk"] = read_global_state(indexer_client, self.global_state["self"]["a1mk"])
         self.global_state["a2mk"] = read_global_state(indexer_client, self.global_state["self"]["a2mk"])
         self.global_state["amm"] = read_global_state(indexer_client, self.global_state["self"]["amm"])
+        self.global_state["oracle"] = read_global_state(indexer_client, self.global_state["self"]["oracle"])
         self.local_state = {}
         self.vault_addr = None
 
@@ -87,6 +88,7 @@ class Perpetual:
         self.global_state["a1mk"] = read_global_state(self.indexer_client, self.global_state["self"]["a1mk"])
         self.global_state["a2mk"] = read_global_state(self.indexer_client, self.global_state["self"]["a2mk"])
         self.global_state["amm"] = read_global_state(self.indexer_client, self.global_state["self"]["amm"])
+        self.global_state["oracle"] = read_global_state(self.indexer_client, self.global_state["self"]["oracle"])
 
     def update_local_state(self, account_obj):
         manager_local_state = read_local_state(self.indexer_client, account_obj.address, self.global_state["self"]["manager"])
@@ -102,6 +104,9 @@ class Perpetual:
         return params
 
     def get_vault_accounts(self):
+        """
+        Get vault accounts with open positions
+        """
         results = {}
         accounts = self.indexer_client.accounts(application_id=self.appId)["accounts"]
         for account in accounts:
@@ -134,6 +139,8 @@ class Perpetual:
                 borrow_amt_bAsset = int(local_state["a2bs"] / self.global_state["self"]["ta2bs"] * self.global_state["self"]["ta2b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a2mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a1mk"]["baer"] / 1e9))
+                oracle_price = self.global_state["oracle"]["latest_price"]
+                current_leverage = round(position_amt_uAsset * (oracle_price/1e6) / (position_amt_uAsset * (oracle_price/1e6) - borrow_amt_uAsset), 2) * 1e2
                 return {
                     "side": "long",
                     "position_amt_bAsset": local_state["ps"],
@@ -146,12 +153,15 @@ class Perpetual:
                     "borrow_uAsset": self.global_state["self"]["a2u"],
                     "position_mkt": self.global_state["self"]["a1mk"],
                     "borrow_mkt": self.global_state["self"]["a2mk"],
+                    "leverage": int(current_leverage)
                 }
             # If short
             else:
                 borrow_amt_bAsset = int(local_state["a1bs"] / self.global_state["self"]["ta1bs"] * self.global_state["self"]["ta1b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a1mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a2mk"]["baer"] / 1e9))
+                oracle_price = 1 / self.global_state["oracle"]["latest_price"]
+                current_leverage = round(position_amt_uAsset * (oracle_price / 1e6) / (position_amt_uAsset * (oracle_price / 1e6) - borrow_amt_uAsset), 2) * 1e2
                 return {
                     "side": "short",
                     "position_amt_bAsset": local_state["ps"],
@@ -163,6 +173,7 @@ class Perpetual:
                     "borrow_asset": self.global_state["self"]["a1"],
                     "position_mkt": self.global_state["self"]["a2mk"],
                     "borrow_mkt": self.global_state["self"]["a1mk"],
+                    "leverage": int(current_leverage)
                 }
 
     def opt_in(self, account_obj: Account):
@@ -430,6 +441,9 @@ class Perpetual:
 
         # Get the target's position
         position = self.get_position(target)
+        if position["leverage"] < self.global_state["self"]["ml"]:
+            raise Exception("Target position is not liquidatable")
+
         slippage_adjusted_borrow = position["borrow_amt_bAsset"] * (1 + slippage)
 
         # If not currently building a ATC, create one
