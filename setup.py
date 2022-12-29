@@ -16,9 +16,11 @@ setuptools.setup(
     project_urls={
         "Source": "https://github.com/DeridexHQ/deridex-py-sdk",
     },
-    install_requires=["py-algorand-sdk >= 1.6.0"],
     packages=setuptools.find_packages(),
     python_requires=">=3.8",
-    package_data={'deridex.options.v1': ['contracts.json']},
+    package_data={
+        'deridex.options.v1': ['contracts.json'],
+        'deridex.perpetuals.v1': ['contracts.json', 'abi/*.json'],
+    },
     include_package_data=True,
 )

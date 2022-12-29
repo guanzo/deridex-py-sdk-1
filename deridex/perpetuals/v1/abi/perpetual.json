@@ -1,0 +1,586 @@
+{
+    "name": "Perpetuals",
+    "methods": [
+        {
+            "name": "treasury_withdraw",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "treasury"
+                },
+                {
+                    "type": "asset",
+                    "name": "asset"
+                },
+                {
+                    "type": "uint64",
+                    "name": "amount"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Send funds to treasury\nFee 2"
+        },
+        {
+            "name": "update_account",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "key"
+                },
+                {
+                    "type": "account",
+                    "name": "value"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Used to update treasury or admin\nFee 1"
+        },
+        {
+            "name": "update_params",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "key"
+                },
+                {
+                    "type": "uint64",
+                    "name": "value"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "create",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "amm"
+                },
+                {
+                    "type": "asset",
+                    "name": "a1"
+                },
+                {
+                    "type": "asset",
+                    "name": "a1u"
+                },
+                {
+                    "type": "application",
+                    "name": "a1mk"
+                },
+                {
+                    "type": "asset",
+                    "name": "a2"
+                },
+                {
+                    "type": "asset",
+                    "name": "a2u"
+                },
+                {
+                    "type": "application",
+                    "name": "a2mk"
+                },
+                {
+                    "type": "application",
+                    "name": "launch"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a1_bir"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a1_su"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a1_so"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a1_ou"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Creates the contract, opts into assets\nFee 6"
+        },
+        {
+            "name": "config",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "application",
+                    "name": "oracle"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "lp_manager"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a2_bir"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a2_su"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a2_so"
+                },
+                {
+                    "type": "uint64",
+                    "name": "a2_ou"
+                },
+                {
+                    "type": "uint64",
+                    "name": "protocol_reserve"
+                },
+                {
+                    "type": "uint64",
+                    "name": "trading_fee"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "This tx is used to add more global state vars that could not be included in the creation tx, also opts into manager\nThis tx happens once right after creation. Fee 2"
+        },
+        {
+            "name": "opt_in",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "manager"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Vault opt-in to perp"
+        },
+        {
+            "name": "add",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "in_uAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "in_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Add liquidity to the pool\nFee 9"
+        },
+        {
+            "name": "remove",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "out_uAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "out_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                },
+                {
+                    "type": "uint64",
+                    "name": "out_ss"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Remove liquidity from pool\nFee 10"
+        },
+        {
+            "name": "entry_step_1",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "in_uAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "in_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                },
+                {
+                    "type": "uint64",
+                    "name": "leverage"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Step one of entering a trade. uAsset is deposited into the interface and minted. Remainder of trade is borrowed and\nsent to the interface Fee 8"
+        },
+        {
+            "name": "entry_step_2",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "in_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "out_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "amm"
+                },
+                {
+                    "type": "application",
+                    "name": "lp_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "application",
+                    "name": "oracle"
+                },
+                {
+                    "type": "application",
+                    "name": "position_mkt"
+                },
+                {
+                    "type": "application",
+                    "name": "borrow_mkt"
+                },
+                {
+                    "type": "uint64",
+                    "name": "min_amount_out"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Swaps bAssets on lending pool AMM\nFee 5"
+        },
+        {
+            "name": "entry_step_3",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "out_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "out_asset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Burns(if applicable) and sends position asset to vault\nFee 4 or 9(burn) 10(goverannce)"
+        },
+        {
+            "name": "exit_step_1",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "in_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "in_asset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Gets position asset from vault and mints(if applicable)\nFee 3 or 8(mint) 9(governance)"
+        },
+        {
+            "name": "exit_step_2",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "in_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "out_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "amm"
+                },
+                {
+                    "type": "application",
+                    "name": "lp_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "uint64",
+                    "name": "min_amount_out"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Swaps bAssets in interface\nFee 5"
+        },
+        {
+            "name": "exit_step_3",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "out_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "out_asset"
+                },
+                {
+                    "type": "application",
+                    "name": "mkt_app"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Gets the swapped asset from interface, repays debt, then burns the bAsset for uAsset and sends to user\nFee 12"
+        },
+        {
+            "name": "liquidate",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "position_asset"
+                },
+                {
+                    "type": "asset",
+                    "name": "position_bAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "borrow_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "position_mkt"
+                },
+                {
+                    "type": "application",
+                    "name": "borrow_mkt"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "oracle"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Allows 3rd party to liquidate position\nFee 5"
+        },
+        {
+            "name": "deleverage",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "borrow_uAsset"
+                },
+                {
+                    "type": "asset",
+                    "name": "borrow_bAsset"
+                },
+                {
+                    "type": "application",
+                    "name": "borrow_mkt"
+                },
+                {
+                    "type": "application",
+                    "name": "af_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "application",
+                    "name": "interface"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Allows user to pay down borrowed shares to decrease their leverage\nFee 9"
+        },
+        {
+            "name": "sync",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "dd_manager"
+                },
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "If governance rewards are distributed while in a position, use this to sync position size state\nFee 1"
+        }
+    ],
+    "networks": {}
+}

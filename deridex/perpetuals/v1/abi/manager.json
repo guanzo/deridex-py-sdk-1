@@ -1,0 +1,151 @@
+{
+    "name": "Manager",
+    "methods": [
+        {
+            "name": "user",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "User sent opt-in\nFee 1"
+        },
+        {
+            "name": "vault",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "user"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Vault send opt-in\nFee 1"
+        },
+        {
+            "name": "app_oi",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "target_app"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Opt in from protocol applications\nFee 1"
+        },
+        {
+            "name": "vault_oi",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault_account"
+                },
+                {
+                    "type": "application",
+                    "name": "target"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Vault opting into protocol app\nFee 2"
+        },
+        {
+            "name": "vault_asset_oi",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "asset"
+                },
+                {
+                    "type": "account",
+                    "name": "target"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Vault asset opt-in\nFee 2"
+        },
+        {
+            "name": "algo_gov",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault_account"
+                },
+                {
+                    "type": "account",
+                    "name": "gov_wallet"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Governance relay method for Commitment and Voting\nFee 2"
+        },
+        {
+            "name": "set_algo_gov",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault_account"
+                },
+                {
+                    "type": "uint64",
+                    "name": "clear"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Clears or sets gov app id. Sent from the protocol app"
+        },
+        {
+            "name": "claim_algo_gov",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault_account"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "If there is no active governance app. Allow user to withdraw Algo from vault\nFee 2"
+        },
+        {
+            "name": "vault_send",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "vault"
+                },
+                {
+                    "type": "account",
+                    "name": "target"
+                },
+                {
+                    "type": "asset",
+                    "name": "asset"
+                },
+                {
+                    "type": "uint64",
+                    "name": "amount"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Used to allow protocol apps to retrieve funds from vaults\nFee 2"
+        }
+    ],
+    "networks": {}
+}
