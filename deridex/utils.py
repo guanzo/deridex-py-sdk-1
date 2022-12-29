@@ -32,26 +32,24 @@ def format_state(state):
     :return: dict of state with keys + values formatted from bytes to utf-8 strings
     :rtype: dict
     """
-    formatted = {}
+    formatted_state = {}
     for item in state:
-        key = item['key']
-        value = item['value']
+        key = item["key"]
+        value = item["value"]
         try:
-            formatted_key = b64decode(key).decode('utf-8')
+            formatted_key = b64decode(key).decode("utf-8")
         except:
             formatted_key = b64decode(key)
-
-        if value['type'] == 1:
+        if value["type"] == 1:
             # byte string
             try:
-                formatted_value = b64decode(value['bytes']).decode('utf-8')
+                formatted_state[formatted_key] = b64decode(value["bytes"]).decode("utf-8")
             except:
-                formatted_value = encode_address(b64decode(value['bytes']))
-            formatted[formatted_key] = formatted_value
+                formatted_state[formatted_key] = value["bytes"]
         else:
             # integer
-            formatted[formatted_key] = value['uint']
-    return formatted
+            formatted_state[formatted_key] = value["uint"]
+    return formatted_state
 
 
 def read_global_state(indexer_client, app_id, block=None):
