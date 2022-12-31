@@ -105,7 +105,7 @@ class Perpetual:
 
     def get_vault_accounts(self):
         """
-        Get vault accounts with open positions
+        Get vault accounts with their state
         """
         results = {}
         accounts = self.indexer_client.accounts(application_id=self.appId)["accounts"]
@@ -114,8 +114,7 @@ class Perpetual:
             for app in account["apps-local-state"]:
                 if app["id"] == self.appId:
                     state = format_state(app["key-value"])
-                    if state["pa"] > 0:
-                        results[address] = self.get_position(address, state)
+                    results[address] = state
                     break
         return results
 
@@ -135,12 +134,12 @@ class Perpetual:
         # Check if in any position
         if local_state["pa"] != 0:
             # If long
-            if local_state["a2bs"] > 0:
+            if local_state["pa"] == self.global_state["self"]["a1"]:
                 borrow_amt_bAsset = int(local_state["a2bs"] / self.global_state["self"]["ta2bs"] * self.global_state["self"]["ta2b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a2mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a1mk"]["baer"] / 1e9))
                 oracle_price = self.global_state["oracle"]["latest_price"] / 1e6
-                current_leverage = round(position_amt_uAsset * (oracle_price/1e6) / (position_amt_uAsset * (oracle_price/1e6) - borrow_amt_uAsset), 2) * 1e2
+                current_leverage = round(position_amt_uAsset * oracle_price / (position_amt_uAsset * oracle_price - borrow_amt_uAsset), 2) * 1e2
                 return {
                     "side": "long",
                     "position_amt_bAsset": local_state["ps"],
@@ -156,7 +155,7 @@ class Perpetual:
                     "leverage": int(current_leverage)
                 }
             # If short
-            else:
+            elif local_state["pa"] == self.global_state["self"]["a2"]:
                 borrow_amt_bAsset = int(local_state["a1bs"] / self.global_state["self"]["ta1bs"] * self.global_state["self"]["ta1b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a1mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a2mk"]["baer"] / 1e9))
