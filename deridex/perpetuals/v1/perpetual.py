@@ -437,7 +437,7 @@ class Perpetual:
 
         return gtx
 
-    def liquidate(self, account_obj: Account, target: str, slippage: float = 0.02, gtx: AtomicTransactionComposer = None):
+    def liquidate(self, account_obj: Account, target: str, slippage: float = 0.01, gtx: AtomicTransactionComposer = None):
 
         # Get the target's position
         position = self.get_position(target)
