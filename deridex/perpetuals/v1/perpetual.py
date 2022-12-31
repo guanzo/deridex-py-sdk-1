@@ -139,7 +139,7 @@ class Perpetual:
                 borrow_amt_bAsset = int(local_state["a2bs"] / self.global_state["self"]["ta2bs"] * self.global_state["self"]["ta2b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a2mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a1mk"]["baer"] / 1e9))
-                oracle_price = self.global_state["oracle"]["latest_price"]
+                oracle_price = self.global_state["oracle"]["latest_price"] / 1e6
                 current_leverage = round(position_amt_uAsset * (oracle_price/1e6) / (position_amt_uAsset * (oracle_price/1e6) - borrow_amt_uAsset), 2) * 1e2
                 return {
                     "side": "long",
@@ -160,8 +160,8 @@ class Perpetual:
                 borrow_amt_bAsset = int(local_state["a1bs"] / self.global_state["self"]["ta1bs"] * self.global_state["self"]["ta1b"])
                 borrow_amt_uAsset = int(borrow_amt_bAsset * (self.global_state["a1mk"]["baer"] / 1e9))
                 position_amt_uAsset = int(local_state["ps"] * (self.global_state["a2mk"]["baer"] / 1e9))
-                oracle_price = 1 / self.global_state["oracle"]["latest_price"]
-                current_leverage = round(position_amt_uAsset * (oracle_price / 1e6) / (position_amt_uAsset * (oracle_price / 1e6) - borrow_amt_uAsset), 2) * 1e2
+                oracle_price = 1 / (self.global_state["oracle"]["latest_price"] / 1e6)
+                current_leverage = round(position_amt_uAsset * oracle_price / (position_amt_uAsset * oracle_price - borrow_amt_uAsset), 2) * 1e2
                 return {
                     "side": "short",
                     "position_amt_bAsset": local_state["ps"],
