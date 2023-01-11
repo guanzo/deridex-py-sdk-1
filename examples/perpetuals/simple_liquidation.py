@@ -20,8 +20,6 @@ for account in accounts:
 
 # Liquidate all vault accounts with a position if possible
 for account in account_positions:
-    print(account)
-    print(account_positions[account])
     if account_positions[account]["leverage"] >= 3000:
         gtx = perpetual.liquidate(user_account, account)
         gtx.submit(client.algod)

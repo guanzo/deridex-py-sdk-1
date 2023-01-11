@@ -55,8 +55,8 @@ class TestnetClient(Client):
 class MainnetClient(Client):
     def __init__(self, algod_client=None, indexer_client=None, account=None):
         if algod_client is None:
-            algod_client = AlgodClient("", "https://node.algoexplorerapi.io", headers={"User-Agent": "algosdk"})
+            algod_client = AlgodClient("", "https://mainnet-api.algonode.cloud")
         if indexer_client is None:
-            indexer_client = IndexerClient("", "https://algoindexer.algoexplorerapi.io",
+            indexer_client = IndexerClient("", "https://mainnet-idx.algonode.cloud",
                                            headers={"User-Agent": "algosdk"})
         super().__init__(algod_client, indexer_client, account, network="mainnet")
