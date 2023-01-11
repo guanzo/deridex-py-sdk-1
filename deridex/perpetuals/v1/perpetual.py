@@ -511,3 +511,121 @@ class Perpetual:
         )
 
         return gtx
+
+    def add(self, uAsset: int, amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
+        """
+        Add liquidity.
+        :param uAsset:
+        :type uAsset: int
+        :param amount:
+        :type amount: int
+        :param account_obj:
+        :type account_obj: Account
+        :param gtx:
+        :type gtx: AtomicTransactionComposer
+        :return:
+        :rtype: AtomicTransactionComposer
+        """
+        self.update_local_state(account_obj)
+
+        # If not currently building a ATC, create one
+        if gtx is None:
+            gtx = AtomicTransactionComposer()
+
+        if uAsset == self.a1u:
+            bAsset = self.a1
+            market = self.global_state["self"]["a1mk"]
+            gtx.add_transaction(
+                TransactionWithSigner(
+                    PaymentTxn(
+                        sender=account_obj.address,
+                        sp=self.get_suggested_params(),
+                        receiver=self.perpetual_addr,
+                        amt=amount,
+                    ),
+                    account_obj.signer
+                )
+            )
+        else:
+            bAsset = self.a2
+            market = self.global_state["self"]["a2mk"]
+            gtx.add_transaction(
+                TransactionWithSigner(
+                    AssetTransferTxn(
+                        index=uAsset,
+                        sender=account_obj.address,
+                        sp=self.get_suggested_params(),
+                        receiver=self.perpetual_addr,
+                        amt=amount,
+                    ),
+                    account_obj.signer
+                )
+            )
+
+        gtx.add_method_call(
+            app_id=self.appId,
+            on_complete=OnComplete.NoOpOC,
+            sp=self.get_suggested_params(9),
+            method=self.perpetual_contract.get_method_by_name("add"),
+            sender=account_obj.address,
+            signer=account_obj.signer,
+            method_args=[
+                uAsset,
+                bAsset,
+                market,
+                self.global_state["self"]["manager"],
+                self.global_state["self"]["af_manager"],
+                self.global_state["self"]["interface"],
+                self.vault_addr,
+            ]
+        )
+
+        return gtx
+
+    def remove(self, uAsset: int, amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
+        """
+        Remove liquidity.
+        :param uAsset:
+        :type uAsset: int
+        :param amount:
+        :type amount: int
+        :param account_obj:
+        :type account_obj: Account
+        :param gtx:
+        :type gtx: AtomicTransactionComposer
+        :return:
+        :rtype: AtomicTransactionComposer
+        """
+        self.update_local_state(account_obj)
+
+        # If not currently building a ATC, create one
+        if gtx is None:
+            gtx = AtomicTransactionComposer()
+
+        if uAsset == self.a1u:
+            bAsset = self.a1
+            market = self.global_state["self"]["a1mk"]
+        else:
+            bAsset = self.a2
+            market = self.global_state["self"]["a2mk"]
+
+        gtx.add_method_call(
+            app_id=self.appId,
+            on_complete=OnComplete.NoOpOC,
+            sp=self.get_suggested_params(10),
+            method=self.perpetual_contract.get_method_by_name("remove"),
+            sender=account_obj.address,
+            signer=account_obj.signer,
+            method_args=[
+                uAsset,
+                bAsset,
+                market,
+                self.global_state["self"]["manager"],
+                self.global_state["self"]["af_manager"],
+                self.global_state["self"]["interface"],
+                self.vault_addr,
+                amount,
+            ]
+        )
+
+        return gtx
