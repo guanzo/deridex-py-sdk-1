@@ -512,7 +512,7 @@ class Perpetual:
 
         return gtx
 
-    def add(self, uAsset: int, amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
+    def add(self, uAsset: int, uAsset_amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
         """
         Add liquidity.
         :param uAsset:
@@ -541,7 +541,7 @@ class Perpetual:
                         sender=account_obj.address,
                         sp=self.get_suggested_params(),
                         receiver=self.perpetual_addr,
-                        amt=amount,
+                        amt=uAsset_amount,
                     ),
                     account_obj.signer
                 )
@@ -556,7 +556,7 @@ class Perpetual:
                         sender=account_obj.address,
                         sp=self.get_suggested_params(),
                         receiver=self.perpetual_addr,
-                        amt=amount,
+                        amt=uAsset_amount,
                     ),
                     account_obj.signer
                 )
@@ -582,7 +582,7 @@ class Perpetual:
 
         return gtx
 
-    def remove(self, uAsset: int, amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
+    def remove(self, uAsset: int, uAsset_amount: int, account_obj: Account, gtx: AtomicTransactionComposer = None):
         """
         Remove liquidity.
         :param uAsset:
@@ -602,12 +602,17 @@ class Perpetual:
         if gtx is None:
             gtx = AtomicTransactionComposer()
 
+        global_state = self.global_state["self"]
         if uAsset == self.a1u:
             bAsset = self.a1
-            market = self.global_state["self"]["a1mk"]
+            market_app_id = global_state["a1mk"]
+            bAsset_amount = uAsset_amount / (self.global_state["a1mk"]["baer"] / 1e9)
+            supply_share = bAsset_amount * global_state['ta1ss'] / global_state['ta1s']
         else:
             bAsset = self.a2
-            market = self.global_state["self"]["a2mk"]
+            market_app_id = global_state["a2mk"]
+            bAsset_amount = uAsset_amount / (self.global_state["a2mk"]["baer"] / 1e9)
+            supply_share = bAsset_amount * global_state['ta2ss'] / global_state['ta2s']
 
         gtx.add_method_call(
             app_id=self.appId,
@@ -619,12 +624,12 @@ class Perpetual:
             method_args=[
                 uAsset,
                 bAsset,
-                market,
-                self.global_state["self"]["manager"],
-                self.global_state["self"]["af_manager"],
-                self.global_state["self"]["interface"],
+                market_app_id,
+                global_state["manager"],
+                global_state["af_manager"],
+                global_state["interface"],
                 self.vault_addr,
-                amount,
+                int(supply_share),
             ]
         )
 
