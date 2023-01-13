@@ -9,7 +9,7 @@ setuptools.setup(
     description="Deridex Derivative Protocol Python SDK",
     author="Deridex",
     author_email="info@deridex.org",
-    version="0.1.2",
+    version="0.1.3",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
