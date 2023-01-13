@@ -602,17 +602,17 @@ class Perpetual:
         if gtx is None:
             gtx = AtomicTransactionComposer()
 
-        global_state = self.global_state["self"]
+        global_state_self = self.global_state["self"]
         if uAsset == self.a1u:
             bAsset = self.a1
-            market_app_id = global_state["a1mk"]
+            market_app_id = global_state_self["a1mk"]
             bAsset_amount = uAsset_amount / (self.global_state["a1mk"]["baer"] / 1e9)
-            supply_share = bAsset_amount * global_state['ta1ss'] / global_state['ta1s']
+            supply_share = bAsset_amount * global_state_self['ta1ss'] / global_state_self['ta1s']
         else:
             bAsset = self.a2
-            market_app_id = global_state["a2mk"]
+            market_app_id = global_state_self["a2mk"]
             bAsset_amount = uAsset_amount / (self.global_state["a2mk"]["baer"] / 1e9)
-            supply_share = bAsset_amount * global_state['ta2ss'] / global_state['ta2s']
+            supply_share = bAsset_amount * global_state_self['ta2ss'] / global_state_self['ta2s']
 
         gtx.add_method_call(
             app_id=self.appId,
@@ -625,9 +625,9 @@ class Perpetual:
                 uAsset,
                 bAsset,
                 market_app_id,
-                global_state["manager"],
-                global_state["af_manager"],
-                global_state["interface"],
+                global_state_self["manager"],
+                global_state_self["af_manager"],
+                global_state_self["interface"],
                 self.vault_addr,
                 int(supply_share),
             ]
